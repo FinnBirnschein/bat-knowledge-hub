@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAT Knowledge Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:wght@400;600&display=swap');
+:root { --red:#E3000F; --dark:#1C1C1C; --mid:#3A3A3A; --gray:#6B6B6B; --light:#F5F5F5; --border:#E0E0E0; --white:#FFFFFF; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Source Sans 3',sans-serif;background:var(--light);color:var(--dark);}
+
+/* TOPBAR */
+.topbar{background:var(--dark);height:48px;display:flex;align-items:center;padding:0 40px;position:sticky;top:0;z-index:200;}
+.topbar-logo img{height:26px;filter:brightness(0) invert(1);cursor:pointer;}
+.topbar-nav{display:flex;align-items:stretch;margin-left:40px;height:100%;position:relative;}
+.nav-item-wrap{position:relative;}
+.nav-top-btn{display:flex;align-items:center;gap:6px;padding:0 16px;height:48px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.7);background:none;border:none;cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;}
+.nav-top-btn:hover,.nav-top-btn.active{color:white;border-bottom-color:var(--red);}
+.nav-arrow{font-size:9px;transition:transform 0.2s;}
+.nav-top-btn.open .nav-arrow{transform:rotate(180deg);}
+.nav-dropdown{display:none;position:absolute;top:48px;left:0;min-width:220px;background:white;border:1px solid var(--border);border-top:2px solid var(--red);box-shadow:0 8px 24px rgba(0,0,0,0.12);z-index:300;}
+.nav-dropdown.open{display:block;}
+.nav-dd-item{display:block;width:100%;padding:11px 18px;background:none;border:none;cursor:pointer;text-align:left;font-family:inherit;font-size:13px;color:var(--mid);border-bottom:1px solid #F5F5F5;transition:all 0.15s;}
+.nav-dd-item:hover{background:var(--light);color:var(--red);padding-left:22px;}
+.nav-dd-item:last-child{border-bottom:none;}
+.topbar-search{margin-left:auto;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:4px;padding:5px 12px;width:200px;}
+.topbar-search input{background:none;border:none;outline:none;color:white;font-size:13px;width:100%;font-family:inherit;}
+.topbar-search input::placeholder{color:rgba(255,255,255,0.35);}
+
+/* HERO */
+.hero{background:var(--dark);color:white;padding:52px 80px;display:grid;grid-template-columns:1fr 400px;gap:40px;align-items:center;min-height:280px;}
+.hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.hero-eyebrow::before{content:'';width:24px;height:2px;background:var(--red);}
+.hero h1{font-family:'Source Serif 4',serif;font-size:32px;font-weight:600;line-height:1.25;margin-bottom:12px;}
+.hero p{font-size:14px;color:rgba(255,255,255,0.55);line-height:1.65;max-width:480px;}
+.hero-stats{display:flex;gap:36px;margin-top:28px;}
+.hero-stat-num{font-size:26px;font-weight:700;font-family:'Source Serif 4',serif;}
+.hero-stat-label{font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.8px;}
+.hero-svg-wrap{width:320px;height:180px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+
+/* QUOTES */
+.quote-band{background:white;border-bottom:1px solid var(--border);padding:28px 80px;display:grid;grid-template-columns:1fr 1fr;gap:40px;}
+.quote-item{display:flex;gap:16px;align-items:flex-start;}
+.quote-mark{font-size:48px;line-height:0.8;color:var(--red);font-family:Georgia,serif;flex-shrink:0;margin-top:8px;}
+.quote-text{font-size:14px;line-height:1.6;color:var(--mid);font-style:italic;}
+.quote-author{font-size:12px;color:var(--gray);margin-top:8px;font-style:normal;font-weight:600;}
+
+/* PAGE */
+.page-wrap{max-width:1200px;margin:0 auto;padding:40px;}
+.section-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* QUICK GRID */
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:40px;}
+.quick-card{background:white;border:1px solid var(--border);border-radius:8px;padding:20px 18px;cursor:pointer;transition:all 0.2s;}
+.quick-card:hover{border-color:var(--red);box-shadow:0 6px 20px rgba(227,0,15,0.08);transform:translateY(-2px);}
+.qc-icon{font-size:22px;margin-bottom:10px;}
+.qc-title{font-size:13px;font-weight:600;color:var(--dark);margin-bottom:4px;line-height:1.3;}
+.qc-desc{font-size:12px;color:var(--gray);}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px;}
+.info-card{background:white;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.info-card-head{padding:13px 20px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:0.8px;}
+.info-list-item{padding:11px 20px;border-bottom:1px solid #F8F8F8;display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--mid);transition:background 0.15s;}
+.info-list-item:hover{background:var(--light);}
+.info-list-item:last-child{border-bottom:none;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:40px;}
+.contact-card{background:white;border:1px solid var(--border);border-radius:8px;padding:20px;}
+.contact-name{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:2px;}
+.contact-role{font-size:12px;color:var(--red);font-weight:600;margin-bottom:12px;}
+.contact-line{font-size:12px;color:var(--gray);margin-bottom:4px;}
+
+/* CONTENT PAGE */
+.content-page{display:none;padding:40px;max-width:900px;}
+.content-page.active{display:block;}
+.breadcrumb{font-size:12px;color:var(--gray);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.breadcrumb span{cursor:pointer;}
+.breadcrumb span:hover{color:var(--red);}
+.content-title{font-family:'Source Serif 4',serif;font-size:26px;font-weight:600;margin-bottom:4px;}
+.content-meta{font-size:12px;color:var(--gray);margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.article{background:white;border:1px solid var(--border);border-radius:8px;padding:28px 32px;}
+.article p{font-size:14px;line-height:1.7;color:var(--mid);margin-bottom:16px;}
+.article h3{font-size:15px;font-weight:700;color:var(--dark);margin:22px 0 12px;}
+.step{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid #F5F5F5;}
+.step:last-child{border-bottom:none;}
+.step-num{width:28px;height:28px;background:var(--red);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.step-title{font-size:13px;font-weight:600;color:var(--dark);margin-bottom:4px;}
+.step-desc{font-size:13px;color:var(--gray);line-height:1.5;}
+.step-note{margin-top:6px;font-size:12px;color:#CC7700;background:rgba(255,140,0,0.07);padding:6px 10px;border-radius:4px;border-left:3px solid #CC7700;}
+.term-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px;}
+.term-card{background:var(--light);border:1px solid var(--border);border-radius:6px;padding:16px;}
+.term-name{font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px;}
+.term-desc{font-size:13px;color:var(--mid);line-height:1.5;}
+.quality-table{width:100%;border-collapse:collapse;margin-top:16px;font-size:13px;}
+.quality-table th{background:var(--dark);color:white;padding:10px 14px;text-align:left;font-weight:600;font-size:12px;}
+.quality-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--mid);}
+.quality-table tr:nth-child(even) td{background:#FAFAFA;}
+.info-box{background:#FFF8E1;border:1px solid #FFD54F;border-radius:6px;padding:14px 16px;margin-top:16px;font-size:13px;color:#5D4037;line-height:1.6;}
+
+/* CHAT */
+.chat-fab{position:fixed;bottom:28px;right:28px;width:52px;height:52px;background:var(--red);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(227,0,15,0.35);z-index:999;transition:transform 0.2s;}
+.chat-fab:hover{transform:scale(1.08);}
+.chat-fab svg{width:22px;height:22px;fill:white;}
+.chat-badge{position:absolute;top:-3px;right:-3px;width:18px;height:18px;background:var(--dark);color:white;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.chat-window{display:none;position:fixed;bottom:92px;right:28px;width:360px;height:520px;background:white;border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,0.15);z-index:998;flex-direction:column;overflow:hidden;}
+.chat-window.open{display:flex;}
+.chat-header{background:var(--dark);padding:14px 18px;display:flex;align-items:center;gap:10px;}
+.chat-avatar{width:32px;height:32px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.chat-header-name{font-size:13px;font-weight:600;color:white;}
+.chat-header-status{font-size:11px;color:rgba(255,255,255,0.4);}
+.chat-close{margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:18px;}
+.chat-suggestions{padding:12px 14px;border-bottom:1px solid var(--border);background:#FAFAFA;}
+.chat-suggestions-label{font-size:11px;color:var(--gray);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;}
+.chat-chip{display:inline-block;padding:5px 10px;background:white;border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--mid);cursor:pointer;margin:3px 3px 3px 0;transition:all 0.15s;font-family:inherit;}
+.chat-chip:hover{border-color:var(--red);color:var(--red);background:#FFF5F5;}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
+.msg{max-width:85%;font-size:13px;line-height:1.5;}
+.msg-bot{background:var(--light);border:1px solid var(--border);border-radius:12px 12px 12px 2px;padding:10px 14px;color:var(--dark);align-self:flex-start;}
+.msg-user{background:var(--red);border-radius:12px 12px 2px 12px;padding:10px 14px;color:white;align-self:flex-end;}
+.msg-typing{background:var(--light);border:1px solid var(--border);border-radius:12px 12px 12px 2px;padding:10px 14px;align-self:flex-start;display:none;}
+.typing-dots{display:flex;gap:4px;align-items:center;height:16px;}
+.typing-dots span{width:6px;height:6px;background:var(--gray);border-radius:50%;animation:bounce 1.2s infinite;}
+.typing-dots span:nth-child(2){animation-delay:0.2s;}
+.typing-dots span:nth-child(3){animation-delay:0.4s;}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-6px);}}
+.chat-input-area{padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:8px;}
+.chat-input{flex:1;border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:13px;font-family:inherit;outline:none;color:var(--dark);}
+.chat-input:focus{border-color:var(--red);}
+.chat-send{width:38px;height:38px;background:var(--red);border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.chat-send:hover{opacity:0.85;}
+.chat-send svg{width:15px;height:15px;fill:white;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-logo" onclick="showHome()">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAV4AAACYCAMAAACbM3E1AAAAY1BMVEUAAAB8fHt8fHt8fHvlOCjlOCh8fHt8fHvlOCh8fHvlOCh8fHt8fHt8fHt8fHt8fHt8fHt8fHt8fHt8fHvlOCjlOCjlOCjlOCjlOCjlOCjlOCjlOCjlOCjlOCjlOCjlOCh8fHsT35xnAAAAIXRSTlMAv/9AIDCf71AQjyDPYDDfcFCPr69wz99gEJ/vgED/v4DlsQqsAAAI3ElEQVR42u2b6XKjOhBGhdkx3tn393/KO1W3ylh8kloJngJ7+vyLEzvoqNVSN1jcHQvu0+0oLHk4SwRwcn7HWSBXZ7/chXOwJL1bGXYPwEksmQ6/IxbI5bBfHNBrIrAQHByAx7v0PgRyPHysXmQSBHF4QI5v0nsVyPWD9SJpLIyciElZpfcoEOeL9NJ+04OCy3v0pgKJD9+jl/Z7Pihx36L3LpDTh+tFAqHnTrxlld6zQIKv0YuxiITEiWqN3pD4h9+i16E2NuT0Br0Bccr+dL10+D6IXWmV3ptA7t+jl86+R9u8OX1lyUbrvbpLblNKZ0Ha2p3qOciiQlX9jsTO/riAXmLZuyl9vsdYSh8wIyYmSO8fykToReLUKvne5IVwkjc31gvedJ2EyaKbE8tverBerV4xgV6qPn0sdR9Zr1bvGfRSvavTMllMrFerV4BeYmMLoaS6sF5bvS4Z4AEe+m+sl9Br31xxFcZZr07vjSwrYsgEUFTFrNfqDlpAdnPuqt3uynqFEpdOvQ6cwqAJkbJeoeIcGu7tGEWmcspmvcgxsCiJ75gGMGUE/7re1AFSq3ZkiLkBK7nwn9VrTxqTJ4uHrsF+Yr0/sEtYRO8O6zXziOnbFGGszxqs18DlJgA83wb6E/PEerUESrlYnd30R+YL69XzAL+UQlTPeg2kLl0y300n4oD1GpnIx+jOxrvzMes1EhDdnNT80OSV9VJ+7f3hseLCehGTwDPxDMQRcsc/qzeYkEd4kAmPhr3rQZV0AXfMZOJpIdgxdHNOVKc9jFnvgnOKC9xeXryYANZLNNQD7W2KgD4XO6yXGH246ntlR9ZLlA4ufpo9d9YriMPtmgeYL6wXcCAAoV1uzY31mvU6q7749GC95uTgrPtSZMx6jVubs+4L01fWKzOBXtzY7LmwXiwrsOt7PvySM+sFu7i6g8MvCVjvk+MUHha40Ez4GWHMDcn/CVKFndXf9j9xO51c287iVdfA/SDhsF49LnRziOdL8Y+PrFeHA7cpqKejMdTvrJc4VoW6WgHBRB2yXg0TdHNguQN4zLix3hdw6A/o05gJFn/Pek0P+B7hqEUA0c56DfXWFQoFI9iguLLeJeFNJysQBHDSuLBemXCaQ9SFOxAE2AByWe/MJZAMBhCKNCkE/NfrPU02nNxYyEwyN2GBO0lc9b87iY/FlYbBMAzDMAzDMAzDMAzDMAzDMAzDfDFnd+bIOt6Nc5iZWAfrZb0M62W9rJdhvayX9TKsl/WyXob1sl7Wy3pZL+tldq3X718QNH3ejMXwh2Jscl//icg7rsXr1dR71dsOL0TCTJUNMm2DhsdBx5j4woA3vOIJBd2go2iiHeqthlcaYaDuWqWzHvQaKCsBqN0lxJ8gbVfvSi+6qIWWp1wgqwm9EoU2gktZFqkXaaN96fUGmVxo8EtiVKBXjyaA+0EmovUiza70JoNMKdTklDFSL+23GWQyC71Isye9EJM+MXLaGOpFeoHUwxLPQi/S7UdvhJNP2CX8Wuota/UmK5Pb6EX83ejNMI3WdmNCetBrDDGgwEn43aWMe9FbD0hFhniRRP0fqqbFiZH1luNMQRwLfGMOQb3t+AK8bVO9uGFl0txL1LLF1zqiKlU7/aiO0bozzmKjuJYG9eJ14pU0oHfrjc0rtBtKBodW5XAbTyj0Svgt5nisHtuX+axt9Yq6kJLKHvT2s7WXQE4Mp9EGxtv/72L0hCD1il6fV6sX8Q3EuFEvLjJvD3qlYXi6gY/EscJv57pYrxc/TPub6CUNFzZ6cdfr96BXWoTS+KCsm0eEVHMbgdRb6Q7Y8uyW8FcmvXil+ZZ6cawZ/PQkwaMBQuvF7NBrtCXwk6VeMTzp9qC3kOK1Vvd1Sjjlv18vxKs3T+mH6sUxNCqPPmxGq/TmmuQQLbJtAZsbrdffl95ksWNFkkj0kQiCFVtbJk2tdCD/1K2tlQIJXoBug79ebwRrAapHD16w1Ou1L5e6vd5qHimobBSqWrFab99quo05SMvgMwi9XiFV3JvrxQH4ijPCLGSkbyia9XqNtigu4WWYfNQL96n2VBR70vLDUeJuDIMEjC2dEvo/qvOEYl57uqVT7K6l00FlBK+t10s3JDEr4Wuf1pDESMWI/rt6y1pdPUaqXbD+rHY6Xj0WGslf1dv66k22JebfSm8lNtSL3VXlDt6C3uYNelEYTioey4uPu5VZYxMcX5aHPq7Ui7GLKclXF2H+D/TmYnO9GKZ4WstA1Tq92DPGMC01Qd1Y6x19sQO9eOnYMPSWDbPoHXrLxNNXjzkRAoTetum3fsYMF555rJUy+fbdC6jXMuvijOqSRkXohQvcVm8z0JTQTa+FEoPeDkS1NVaPNKOhaiuhx7m13rq1f26hgOj4iV6czgSqRxs8hV6M/mJjvXhF5FrLQfjP9GI3C6tHmk6nVw6AfFu9ZHLEtkANtdaP9KLEEatHmtKgt5cvGfU60zs50t0cOyrI00X9Y72YjiK8O0QToV5VtDSg9+249G0KOwpY2KpHnxtar5xjyhreTdOgXmW4+NvrLQdLPMyO7bJDXg6EXvynHZaJNDXoVc7RuLneaLAlUT26WHbeU05VDAOpF/+rB0FNk6v1wgKrNtOLB81iVACPMfotfAmn+0PzdEvonV8FM4X1tRSod6aD3W0LvUShgB6qH8V7gno1m1iP1WNL5TFfqRd3zmQjvbgeM+pUnMFL9O6DenHVlGS5gWHZqPVikvE21VvKwYnUiixZtRbHOEKvh2WCvtrA97SgVzOqcUu9PaxHoAEN8L0roO2FXi9+bustFkVJtvaGSq0X81e0od5GsZptHvaos8FAVguTXsyQ2SLL53T9PoJezY5R1pvprYn1aGhC9eOgoeztHiPp5N3NgyxEZCrQq9k5u030wnrUkUCEmwSPle1TOnUpHbQSKTLpY2Ri0isyaSLuzt/iLAwk45Nc6PDHGSHh5QvDRe7p/weIj8aZXjTjk0jo6McnjRCiev4Enc0RhvaR9HmXjX/Iurzf6zX+B6lJZYB2bgEKAAAAAElFTkSuQmCC" alt="BAT Agrar">
+  </div>
+  <nav class="topbar-nav">
+    <div class="nav-item-wrap">
+      <button class="nav-top-btn active" id="btn-home" onclick="showHome()">Startseite</button>
+    </div>
+    <div class="nav-item-wrap" onmouseleave="closeDropdown('dd-erp')">
+      <button class="nav-top-btn" id="btn-erp" onmouseenter="openDropdown('dd-erp',this)">ERP – proALPHA <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown" id="dd-erp">
+        <button class="nav-dd-item" onclick="showContent('erp-lieferschein');closeDropdown('dd-erp')">Lieferschein erstellen</button>
+        <button class="nav-dd-item" onclick="showContent('erp-faktura');closeDropdown('dd-erp')">Faktura & Abrechnung</button>
+        <button class="nav-dd-item" onclick="showContent('erp-rahmenbestellung');closeDropdown('dd-erp')">Rahmenbestellung anlegen</button>
+        <button class="nav-dd-item" onclick="showContent('erp-wareneingang');closeDropdown('dd-erp')">Wareneingang buchen</button>
+        <button class="nav-dd-item" onclick="showContent('erp-kontrakt');closeDropdown('dd-erp')">Kontrakt anlegen</button>
+      </div>
+    </div>
+    <div class="nav-item-wrap" onmouseleave="closeDropdown('dd-agrar')">
+      <button class="nav-top-btn" id="btn-agrar" onmouseenter="openDropdown('dd-agrar',this)">Agrar-Fachwissen <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown" id="dd-agrar">
+        <button class="nav-dd-item" onclick="showContent('agrar-qualitaet');closeDropdown('dd-agrar')">Qualitätsparameter Getreide</button>
+        <button class="nav-dd-item" onclick="showContent('agrar-kulturen');closeDropdown('dd-agrar')">Kulturen & Besonderheiten</button>
+        <button class="nav-dd-item" onclick="showContent('agrar-zertifizierung');closeDropdown('dd-agrar')">QS & GMP+ Zertifizierung</button>
+        <button class="nav-dd-item" onclick="showContent('agrar-saatgut');closeDropdown('dd-agrar')">Saatgut Grundlagen</button>
+        <button class="nav-dd-item" onclick="showContent('agrar-duenger');closeDropdown('dd-agrar')">Dünger & Pflanzenschutz</button>
+      </div>
+    </div>
+    <div class="nav-item-wrap" onmouseleave="closeDropdown('dd-schiff')">
+      <button class="nav-top-btn" id="btn-schiff" onmouseenter="openDropdown('dd-schiff',this)">Schifffahrt & Logistik <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown" id="dd-schiff">
+        <button class="nav-dd-item" onclick="showContent('schiff-begriffe');closeDropdown('dd-schiff')">Handelsbegriffe & Incoterms</button>
+        <button class="nav-dd-item" onclick="showContent('schiff-abfertigung');closeDropdown('dd-schiff')">Schiffsabfertigung Ablauf</button>
+        <button class="nav-dd-item" onclick="showContent('schiff-disposition');closeDropdown('dd-schiff')">Disposition Grundlagen</button>
+        <button class="nav-dd-item" onclick="showContent('schiff-dokumente');closeDropdown('dd-schiff')">Dokumente & Nachweise</button>
+      </div>
+    </div>
+    <div class="nav-item-wrap" onmouseleave="closeDropdown('dd-it')">
+      <button class="nav-top-btn" id="btn-it" onmouseenter="openDropdown('dd-it',this)">IT & Microsoft <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown" id="dd-it">
+        <button class="nav-dd-item" onclick="showContent('it-teams');closeDropdown('dd-it')">Microsoft Teams Probleme</button>
+        <button class="nav-dd-item" onclick="showContent('it-outlook');closeDropdown('dd-it')">Outlook Einrichtung</button>
+        <button class="nav-dd-item" onclick="showContent('it-sharepoint');closeDropdown('dd-it')">SharePoint / Intranet</button>
+        <button class="nav-dd-item" onclick="showContent('it-excel');closeDropdown('dd-it')">Excel für den Handel</button>
+      </div>
+    </div>
+    <div class="nav-item-wrap" onmouseleave="closeDropdown('dd-onboarding')">
+      <button class="nav-top-btn" id="btn-onboarding" onmouseenter="openDropdown('dd-onboarding',this)">Onboarding <span class="nav-arrow">▾</span></button>
+      <div class="nav-dropdown" id="dd-onboarding">
+        <button class="nav-dd-item" onclick="showContent('onboarding-erster-tag');closeDropdown('dd-onboarding')">Erster Arbeitstag</button>
+        <button class="nav-dd-item" onclick="showContent('onboarding-standort');closeDropdown('dd-onboarding')">Standort Magdeburg</button>
+        <button class="nav-dd-item" onclick="showContent('onboarding-systeme');closeDropdown('dd-onboarding')">Systemzugänge einrichten</button>
+        <button class="nav-dd-item" onclick="showContent('onboarding-ansprechpartner');closeDropdown('dd-onboarding')">Ansprechpartner</button>
+      </div>
+    </div>
+  </nav>
+  <div class="topbar-search">
+    <span style="color:rgba(255,255,255,0.4);font-size:13px">🔍</span>
+    <input type="text" placeholder="Suchen..." id="searchInput" onkeydown="handleSearch(event)" oninput="handleSearch(event)">
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="home">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Intern · Standort Magdeburg</div>
+      <h1>BAT Knowledge Hub</h1>
+      <p>Prozesswissen, Schritt-für-Schritt-Anleitungen und Fachwissen aus allen Bereichen – für einen schnelleren Einstieg und sicherere Entscheidungen im Arbeitsalltag.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-num">5</div><div class="hero-stat-label">Wissensbereiche</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">20+</div><div class="hero-stat-label">Anleitungen</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">KI</div><div class="hero-stat-label">Assistent aktiv</div></div>
+      </div>
+    </div>
+    <div class="hero-svg-wrap">
+      <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" width="320" height="180">
+        <rect x="20" y="55" width="48" height="110" rx="4" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <ellipse cx="44" cy="55" rx="24" ry="8" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <rect x="82" y="38" width="58" height="127" rx="4" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <ellipse cx="111" cy="38" rx="29" ry="9" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <rect x="154" y="65" width="42" height="100" rx="4" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+        <rect x="0" y="170" width="320" height="10" fill="rgba(100,150,255,0.15)"/>
+        <rect x="195" y="158" width="88" height="12" rx="3" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+        <rect x="215" y="148" width="48" height="10" rx="2" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+        <line x1="0" y1="175" x2="320" y2="175" stroke="rgba(227,0,15,0.4)" stroke-width="2"/>
+        <text x="250" y="145" font-size="7" fill="rgba(255,255,255,0.3)" font-family="sans-serif">Mittellandkanal</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="quote-band">
+    <div class="quote-item">
+      <div class="quote-mark">"</div>
+      <div><div class="quote-text">Wissen ist die einzige Ressource, die sich vermehrt, wenn man sie teilt.</div><div class="quote-author">— Peter F. Drucker, Managementvordenker</div></div>
+    </div>
+    <div class="quote-item">
+      <div class="quote-mark">"</div>
+      <div><div class="quote-text">Der einzige Wettbewerbsvorteil liegt in dem, was ein Unternehmen weiß und wie schnell es neues Wissen erwirbt.</div><div class="quote-author">— Laurence Prusak, Wissensmanagement-Forscher</div></div>
+    </div>
+  </div>
+
+  <div class="page-wrap">
+    <div class="section-label">Schnellzugriff</div>
+    <div class="quick-grid">
+      <div class="quick-card" onclick="showContent('erp-lieferschein')"><div class="qc-icon">⚙️</div><div class="qc-title">Lieferschein in proALPHA</div><div class="qc-desc">Schritt-für-Schritt Anleitung</div></div>
+      <div class="quick-card" onclick="showContent('schiff-begriffe')"><div class="qc-icon">⚓</div><div class="qc-title">CIF, FOB, EXW erklärt</div><div class="qc-desc">Handelsbegriffe & Incoterms</div></div>
+      <div class="quick-card" onclick="showContent('agrar-qualitaet')"><div class="qc-icon">🌾</div><div class="qc-title">Qualitätsparameter Getreide</div><div class="qc-desc">Fallzahl, Protein, Feuchte & mehr</div></div>
+      <div class="quick-card" onclick="showContent('onboarding-erster-tag')"><div class="qc-icon">🎯</div><div class="qc-title">Erster Arbeitstag</div><div class="qc-desc">Orientierung für Neue</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-card">
+        <div class="info-card-head">📌 Häufig aufgerufen</div>
+        <div class="info-list-item" onclick="showContent('erp-faktura')"><span class="dot"></span>Faktura & Abrechnung – proALPHA</div>
+        <div class="info-list-item" onclick="showContent('agrar-qualitaet')"><span class="dot"></span>Qualitätsparameter Getreide</div>
+        <div class="info-list-item" onclick="showContent('schiff-abfertigung')"><span class="dot"></span>Schiffsabfertigung Ablauf</div>
+        <div class="info-list-item" onclick="showContent('erp-kontrakt')"><span class="dot"></span>Kontrakt anlegen – proALPHA</div>
+        <div class="info-list-item" onclick="showContent('it-teams')"><span class="dot"></span>Microsoft Teams Probleme</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-head">🆕 Zuletzt hinzugefügt</div>
+        <div class="info-list-item" onclick="showContent('agrar-duenger')"><span class="dot"></span>Dünger & Pflanzenschutz Grundlagen</div>
+        <div class="info-list-item" onclick="showContent('schiff-disposition')"><span class="dot"></span>Disposition Grundlagen</div>
+        <div class="info-list-item" onclick="showContent('it-excel')"><span class="dot"></span>Excel für den Handel</div>
+        <div class="info-list-item" onclick="showContent('onboarding-systeme')"><span class="dot"></span>Systemzugänge einrichten</div>
+        <div class="info-list-item" onclick="showContent('agrar-zertifizierung')"><span class="dot"></span>QS & GMP+ Zertifizierung</div>
+      </div>
+    </div>
+
+    <div class="section-label">IT-Support Kontakt</div>
+    <div class="contact-grid">
+      <div class="contact-card"><div class="contact-name">Thomas Müller</div><div class="contact-role">IT-Administrator</div><div class="contact-line">📞 0391 7823-141</div><div class="contact-line">✉️ t.mueller@bat-agrar.de</div><div class="contact-line" style="margin-top:6px;color:#999">Mo–Fr, 07:30–16:30 Uhr</div></div>
+      <div class="contact-card"><div class="contact-name">Sandra Krause</div><div class="contact-role">IT-Support / Helpdesk</div><div class="contact-line">📞 0391 7823-142</div><div class="contact-line">✉️ s.krause@bat-agrar.de</div><div class="contact-line" style="margin-top:6px;color:#999">Mo–Fr, 08:00–17:00 Uhr</div></div>
+      <div class="contact-card"><div class="contact-name">IT-Notfallhotline</div><div class="contact-role">Störungen & Ausfälle</div><div class="contact-line">📞 0391 7823-199</div><div class="contact-line">✉️ it-support@bat-agrar.de</div><div class="contact-line" style="margin-top:6px;color:#999">24/7 erreichbar</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT PAGES -->
+<div id="content-pages">
+
+<!-- ERP: LIEFERSCHEIN -->
+<div id="page-erp-lieferschein" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>ERP – proALPHA</span> › Lieferschein erstellen</div>
+  <div class="content-title">Lieferschein erstellen in proALPHA</div>
+  <div class="content-meta">ERP – proALPHA · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Ein Lieferschein dokumentiert die physische Auslieferung von Ware an den Kunden und ist Grundlage für die spätere Faktura. In proALPHA wird er direkt aus dem Verkaufsauftrag heraus erzeugt. Wichtig: Lieferscheine dürfen nur gebucht werden, wenn die Ware tatsächlich das Lager verlassen hat.</p>
+    <h3>Voraussetzungen</h3>
+    <p>Ein gebuchter Verkaufsauftrag muss vorliegen. Die Ware muss im entsprechenden Lagerort eingebucht sein. Die Qualitätsfreigabe durch das Labor muss erfolgt sein.</p>
+    <div class="step"><div class="step-num">1</div><div><div class="step-title">Verkaufsauftrag aufrufen</div><div class="step-desc">Navigiere in proALPHA zu Vertrieb → Auftragsbearbeitung → Verkaufsaufträge. Den Auftrag über die Auftragsnummer oder den Kundennamen suchen und öffnen.</div></div></div>
+    <div class="step"><div class="step-num">2</div><div><div class="step-title">Lieferschein erzeugen</div><div class="step-desc">Im Auftrag oben in der Menüleiste auf „Lieferung" klicken → „Lieferschein erzeugen". Die Lieferscheinmaske öffnet sich automatisch mit den vorausgefüllten Auftragspositionen.</div></div></div>
+    <div class="step"><div class="step-num">3</div><div><div class="step-title">Menge und Lagerort prüfen</div><div class="step-desc">Liefermenge kontrollieren – bei Teillieferungen nur die tatsächlich gelieferte Menge eintragen. Den Lagerort prüfen: er muss dem Ort entsprechen, von dem die Ware entnommen wurde.</div><div class="step-note">⚠️ Falscher Lagerort führt zu Fehlbuchungen im Bestand – immer doppelt prüfen.</div></div></div>
+    <div class="step"><div class="step-num">4</div><div><div class="step-title">Lieferschein buchen</div><div class="step-desc">Auf „Buchen" klicken. Der Lieferschein erhält eine Belegnummer und der Lagerbestand wird automatisch um die gelieferte Menge reduziert. Der Status des Auftrags ändert sich auf „teilgeliefert" oder „vollständig geliefert".</div></div></div>
+    <div class="step"><div class="step-num">5</div><div><div class="step-title">Drucken oder per PDF versenden</div><div class="step-desc">Lieferschein über „Drucken" ausgeben oder als PDF speichern. Das Dokument wird dem Kunden als Warenbegleitpapier mitgegeben oder per E-Mail zugesandt.</div></div></div>
+    <div class="info-box">💡 <strong>Tipp:</strong> Bei Schiffslieferungen wird der Lieferschein direkt an die Disposition übergeben, die dann die Schiffsabfertigung koordiniert. Immer prüfen ob der Lieferschein korrekt an den zuständigen Disponenten weitergeleitet wurde.</div>
+  </div>
+  </div>
+</div>
+
+<!-- ERP: FAKTURA -->
+<div id="page-erp-faktura" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>ERP – proALPHA</span> › Faktura</div>
+  <div class="content-title">Faktura & Abrechnung in proALPHA</div>
+  <div class="content-meta">ERP – proALPHA · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Die Faktura ist der kaufmännische Abrechnungsschritt nach der physischen Lieferung. Aus dem gebuchten Lieferschein wird eine Rechnung erzeugt, die an den Kunden versendet wird. Dieser Prozess ist eng mit der Kontrakt- und Preisfindung verknüpft.</p>
+    <h3>Wann wird fakturiert?</h3>
+    <p>Fakturiert wird immer erst nach erfolgter und gebuchter Lieferung. Ohne gebuchten Lieferschein ist keine Rechnungserstellung möglich. Bei Sammelrechnungen können mehrere Lieferscheine eines Kunden in einer Rechnung zusammengefasst werden.</p>
+    <div class="step"><div class="step-num">1</div><div><div class="step-title">Modul Faktura öffnen</div><div class="step-desc">Vertrieb → Faktura → offene Lieferscheine. Alle gebuchten aber noch nicht fakturierten Lieferscheine erscheinen in dieser Übersicht.</div></div></div>
+    <div class="step"><div class="step-num">2</div><div><div class="step-title">Lieferschein auswählen</div><div class="step-desc">Den zu fakturierenden Lieferschein in der Liste markieren. Bei mehreren Lieferscheinen desselben Kunden können diese gemeinsam ausgewählt werden für eine Sammelrechnung.</div></div></div>
+    <div class="step"><div class="step-num">3</div><div><div class="step-title">Rechnung erzeugen</div><div class="step-desc">„Rechnung erzeugen" klicken. Die Rechnungsmaske öffnet sich. Preise werden automatisch aus dem hinterlegten Kontrakt übernommen. Menge, Einheit, Preis und MwSt.-Satz prüfen.</div><div class="step-note">⚠️ Bei Preisabweichungen immer zuerst den Kontrakt prüfen. Preise nie manuell überschreiben ohne Rücksprache mit dem Handel.</div></div></div>
+    <div class="step"><div class="step-num">4</div><div><div class="step-title">Rechnung buchen</div><div class="step-desc">„Buchen" klicken → die Rechnung erhält eine eindeutige Belegnummer und ist damit rechtswirksam. Sie kann danach nicht mehr verändert werden.</div></div></div>
+    <div class="step"><div class="step-num">5</div><div><div class="step-title">Versenden</div><div class="step-desc">Rechnung als PDF speichern und per E-Mail an den Kunden senden oder über den Postweg verschicken. Den Versand im System dokumentieren.</div></div></div>
+    <div class="info-box">💡 <strong>Tipp:</strong> Für Landwirte, die ihre Ware eingelagert haben, werden nach dem Verkauf Gutschriften statt Rechnungen erstellt. Der Ablauf ist ähnlich, aber der Belegtyp unterscheidet sich.</div>
+  </div>
+  </div>
+</div>
+
+<!-- ERP: RAHMENBESTELLUNG -->
+<div id="page-erp-rahmenbestellung" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>ERP – proALPHA</span> › Rahmenbestellung</div>
+  <div class="content-title">Rahmenbestellung anlegen in proALPHA</div>
+  <div class="content-meta">ERP – proALPHA · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Eine Rahmenbestellung ist eine langfristige Bestellvereinbarung mit einem Lieferanten über eine bestimmte Menge und Konditionen. Sie ermöglicht es, Ware schrittweise abzurufen ohne jedes Mal eine neue Bestellung aufzugeben.</p>
+    <div class="step"><div class="step-num">1</div><div><div class="step-title">Einkauf → Rahmenbestellungen öffnen</div><div class="step-desc">In proALPHA unter Einkauf → Bestellwesen → Rahmenbestellungen navigieren. Auf „Neu" klicken.</div></div></div>
+    <div class="step"><div class="step-num">2</div><div><div class="step-title">Lieferant und Artikel auswählen</div><div class="step-desc">Lieferantennummer eingeben oder über die Suche auswählen. Artikel, Menge, Einheit und vereinbarten Preis hinterlegen.</div></div></div>
+    <div class="step"><div class="step-num">3</div><div><div class="step-title">Gültigkeitszeitraum festlegen</div><div class="step-desc">Start- und Enddatum der Rahmenbestellung eingeben. Dieser Zeitraum begrenzt, wann Abrufe gegen die Rahmenbestellung möglich sind.</div></div></div>
+    <div class="step"><div class="step-num">4</div><div><div class="step-title">Speichern und freigeben</div><div class="step-desc">Rahmenbestellung speichern und freigeben. Sie steht danach für Abrufe zur Verfügung.</div></div></div>
+    <div class="info-box">💡 <strong>Tipp:</strong> Rahmenbestellungen werden vor allem für Betriebsmittel wie Saatgut, Dünger und Pflanzenschutz genutzt, die in festen Mengen über die Saison bezogen werden.</div>
+  </div>
+  </div>
+</div>
+
+<!-- ERP: WARENEINGANG -->
+<div id="page-erp-wareneingang" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>ERP – proALPHA</span> › Wareneingang</div>
+  <div class="content-title">Wareneingang buchen in proALPHA</div>
+  <div class="content-meta">ERP – proALPHA · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Der Wareneingang dokumentiert die Annahme von Ware und erhöht den Lagerbestand im System. Bei Getreide werden gleichzeitig die Laborwerte mit dem Eingang verknüpft.</p>
+    <div class="step"><div class="step-num">1</div><div><div class="step-title">Logistik → Wareneingang öffnen</div><div class="step-desc">In proALPHA unter Logistik → Wareneingang → Neuer Wareneingang navigieren.</div></div></div>
+    <div class="step"><div class="step-num">2</div><div><div class="step-title">Referenz eingeben</div><div class="step-desc">Lieferanten-Lieferscheinnummer oder Kontraktnummer eingeben. proALPHA ordnet den Eingang automatisch dem richtigen Vorgang zu.</div></div></div>
+    <div class="step"><div class="step-num">3</div><div><div class="step-title">Menge und Lagerort eingeben</div><div class="step-desc">Nettoeinlagerungsmenge aus der Wiegeaufzeichnung eingeben. Lagerort (Silo-Nummer) angeben, in den die Ware eingelagert wird.</div><div class="step-note">⚠️ Menge immer anhand des Wiegebelegs prüfen – Brutto abzüglich Tara ergibt die Nettomenge.</div></div></div>
+    <div class="step"><div class="step-num">4</div><div><div class="step-title">Laborwerte hinterlegen</div><div class="step-desc">Laborergebnisse (Feuchte, Protein, Fallzahl etc.) aus dem Laborprotokoll in die entsprechenden Felder übertragen.</div></div></div>
+    <div class="step"><div class="step-num">5</div><div><div class="step-title">Buchen</div><div class="step-desc">„Buchen" klicken. Der Lagerbestand erhöht sich automatisch. Der Eingang ist damit im System dokumentiert und rückverfolgbar.</div></div></div>
+  </div>
+  </div>
+</div>
+
+<!-- ERP: KONTRAKT -->
+<div id="page-erp-kontrakt" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>ERP – proALPHA</span> › Kontrakt</div>
+  <div class="content-title">Kontrakt anlegen in proALPHA</div>
+  <div class="content-meta">ERP – proALPHA · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Ein Kontrakt ist eine verbindliche Vereinbarung zwischen BAT Agrar und einem Kunden oder Lieferanten über die Lieferung einer bestimmten Menge zu festgelegten Konditionen. Er bildet die kaufmännische Grundlage für Lieferscheine und Rechnungen.</p>
+    <div class="step"><div class="step-num">1</div><div><div class="step-title">Vertrieb oder Einkauf → Kontrakte öffnen</div><div class="step-desc">Je nach Richtung (Verkauf an Kunden oder Kauf von Lieferant) unter Vertrieb oder Einkauf → Kontrakte → Neu navigieren.</div></div></div>
+    <div class="step"><div class="step-num">2</div><div><div class="step-title">Geschäftspartner auswählen</div><div class="step-desc">Kunden- oder Lieferantennummer eingeben. Artikel, Menge, Einheit und Preiskonditionen hinterlegen.</div></div></div>
+    <div class="step"><div class="step-num">3</div><div><div class="step-title">Lieferbedingungen festlegen</div><div class="step-desc">Lieferort, Incoterm (z.B. CIF, FOB), Lieferzeitraum und Zahlungsbedingungen eingeben.</div></div></div>
+    <div class="step"><div class="step-num">4</div><div><div class="step-title">Qualitätsparameter hinterlegen</div><div class="step-desc">Vereinbarte Qualitäten (Feuchte, Protein etc.) eintragen. Diese werden bei der Abrechnung als Basis herangezogen.</div></div></div>
+    <div class="step"><div class="step-num">5</div><div><div class="step-title">Freigeben und bestätigen</div><div class="step-desc">Kontrakt speichern, freigeben und dem Geschäftspartner eine Auftragsbestätigung zusenden.</div><div class="step-note">⚠️ Kontrakte sind rechtlich bindend – immer vor der Freigabe mit dem zuständigen Händler abstimmen.</div></div></div>
+  </div>
+  </div>
+</div>
+
+<!-- AGRAR: QUALITÄT -->
+<div id="page-agrar-qualitaet" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>Agrar-Fachwissen</span> › Qualitätsparameter</div>
+  <div class="content-title">Qualitätsparameter Getreide</div>
+  <div class="content-meta">Agrar-Fachwissen · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Bei der Annahme von Getreide analysiert das Labor am Standort Magdeburg verschiedene Parameter. Diese bestimmen die Qualitätseinstufung, die Einlagerungsentscheidung und direkt den Abrechnungspreis gegenüber dem Landwirt.</p>
+    <table class="quality-table">
+      <tr><th>Parameter</th><th>Bedeutung</th><th>Richtwert Weizen</th><th>Auswirkung bei Abweichung</th></tr>
+      <tr><td><strong>Feuchte</strong></td><td>Wassergehalt der Körner</td><td>max. 14,5 %</td><td>Trocknung erforderlich, Abzug je % über Grenzwert</td></tr>
+      <tr><td><strong>Proteingehalt</strong></td><td>Entscheidend für Backqualität</td><td>min. 12,0 %</td><td>Qualitätsabstufung, ggf. Preisabzug</td></tr>
+      <tr><td><strong>Fallzahl</strong></td><td>Maß für Auswuchsschäden</td><td>min. 220 Sek.</td><td>Unter 220: Futterweizenqualität</td></tr>
+      <tr><td><strong>Hektolitergewicht</strong></td><td>Körner pro Liter – Kornfülle</td><td>min. 76 kg/hl</td><td>Preisabzug bei Unterschreitung</td></tr>
+      <tr><td><strong>Besatz</strong></td><td>Fremdstoffe, Bruch- und Schmachtkorn</td><td>max. 2 %</td><td>Reinigung erforderlich, Abzug</td></tr>
+      <tr><td><strong>DON</strong></td><td>Mykotoxinbelastung durch Pilze</td><td>max. 1.250 µg/kg</td><td>Über Grenzwert: Ablehnung oder Separatlager</td></tr>
+    </table>
+    <h3>Praxishinweise</h3>
+    <p>Die Laborwerte werden digital im System hinterlegt. Die Silobelegschaft entscheidet auf Basis der Werte über die Einlagerungsstelle. Hohe Feuchte bedeutet immer Trocknungsaufwand – dieser wird dem Landwirt in Rechnung gestellt. Schädlingsbefall führt zur Einlagerung in separaten Bereichen und zu sofortiger Behandlung.</p>
+    <div class="info-box">💡 <strong>Merkhilfe:</strong> Die wichtigsten drei Parameter für Brotweizen sind Feuchte, Protein und Fallzahl – diese entscheiden ob die Mühle die Ware überhaupt annimmt.</div>
+  </div>
+  </div>
+</div>
+
+<!-- AGRAR: KULTUREN -->
+<div id="page-agrar-kulturen" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>Agrar-Fachwissen</span> › Kulturen</div>
+  <div class="content-title">Kulturen & Besonderheiten</div>
+  <div class="content-meta">Agrar-Fachwissen · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Am Standort Magdeburg werden hauptsächlich folgende landwirtschaftliche Erzeugnisse gehandelt. Jede Kultur hat eigene Besonderheiten bei Qualität, Lagerung und Vermarktung.</p>
+    <div class="term-grid">
+      <div class="term-card"><div class="term-name">Weizen</div><div class="term-desc">Wichtigste Kultur. Unterschiedliche Qualitäten: Brotweizen (für Mühlen), Futterweizen (niedrige Qualität). Ernte: Juli/August.</div></div>
+      <div class="term-card"><div class="term-name">Gerste</div><div class="term-desc">Sommer- und Wintergerste. Braugerste (für Malz) hat besondere Qualitätsanforderungen. Futtergerste geht an Mischwerke.</div></div>
+      <div class="term-card"><div class="term-name">Raps</div><div class="term-desc">Ölsaat für Biodiesel und Speiseöl. Hoher Ölgehalt entscheidend. Feuchteempfindlich – sorgfältige Trocknung nötig.</div></div>
+      <div class="term-card"><div class="term-name">Körnermais</div><div class="term-desc">Spätherbsternte (Oktober/November). Sehr feuchteempfindlich. Hauptabnehmer: Futtermittelwerke und Biogasanlagen.</div></div>
+      <div class="term-card"><div class="term-name">Triticale</div><div class="term-desc">Kreuzung aus Weizen und Roggen. Hauptsächlich Futtergetreide. Robuste Kultur, gut für schwierige Böden.</div></div>
+      <div class="term-card"><div class="term-name">Roggen</div><div class="term-desc">Vor allem für Bäckereien und Biogas. Mutterkorn als kritischer Parameter – strenge Grenzwerte beachten.</div></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- AGRAR: ZERTIFIZIERUNG -->
+<div id="page-agrar-zertifizierung" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>Agrar-Fachwissen</span> › Zertifizierung</div>
+  <div class="content-title">QS & GMP+ Zertifizierung</div>
+  <div class="content-meta">Agrar-Fachwissen · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Der Standort Magdeburg ist nach zwei zentralen Qualitätsstandards zertifiziert. Diese Zertifizierungen sind Voraussetzung dafür, bestimmte Abnehmer beliefern zu dürfen.</p>
+    <div class="term-grid">
+      <div class="term-card"><div class="term-name">QS – Qualität und Sicherheit</div><div class="term-desc">System zur Lebensmittelsicherheit entlang der gesamten Kette. Regelt Hygiene, Rückverfolgbarkeit und Dokumentation. Pflicht für Lieferungen an viele Mühlen und Lebensmittelhersteller.</div></div>
+      <div class="term-card"><div class="term-name">GMP+ – Good Manufacturing Practice</div><div class="term-desc">Internationales Zertifizierungssystem für Futtermittelsicherheit. Pflicht für Lieferungen an Mischfutterwerke. Strengere Anforderungen an Lagerung, Reinigung und Schädlingskontrolle.</div></div>
+    </div>
+    <h3>Was bedeutet das im Alltag?</h3>
+    <p>Beide Zertifizierungen erfordern lückenlose Dokumentation aller Warenbewegungen, regelmäßige Reinigungen der Lageranlagen, Schädlingsmonitoring sowie interne und externe Audits. Jede Ware die in zertifizierten Bereichen gelagert wird, muss rückverfolgbar sein – von der Anlieferung bis zur Auslieferung.</p>
+    <div class="info-box">💡 <strong>Wichtig:</strong> Nicht jede Ware darf in jeden Bereich eingelagert werden. GMP+-Ware hat eigene Lagerbereiche. Bei Unsicherheiten immer den Lagerleiter fragen.</div>
+  </div>
+  </div>
+</div>
+
+<!-- AGRAR: SAATGUT -->
+<div id="page-agrar-saatgut" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>Agrar-Fachwissen</span> › Saatgut</div>
+  <div class="content-title">Saatgut Grundlagen</div>
+  <div class="content-meta">Agrar-Fachwissen · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Saatgut ist eines der wichtigsten Betriebsmittel im Portfolio von BAT Agrar. Es wird in separaten Lagerbereichen nach Sorten getrennt geführt und unterliegt besonderen Qualitätsanforderungen.</p>
+    <h3>Wichtige Grundbegriffe</h3>
+    <div class="term-grid">
+      <div class="term-card"><div class="term-name">Z-Saatgut</div><div class="term-desc">Zertifiziertes Saatgut – offiziell anerkannte Qualität. Nur Z-Saatgut darf als „Saatgut" verkauft werden. Erkennbar an der blauen Etikette.</div></div>
+      <div class="term-card"><div class="term-name">Eigenanbau / Nachbau</div><div class="term-desc">Landwirte dürfen eigenes Getreide als Saatgut verwenden (Nachbau), müssen aber Sortenschutzgebühren zahlen.</div></div>
+      <div class="term-card"><div class="term-name">Keimfähigkeit</div><div class="step-desc">Mindestkeimfähigkeit für Weizensaatgut: 85 %. Wird bei der Zertifizierung geprüft.</div></div>
+      <div class="term-card"><div class="term-name">Beizung</div><div class="term-desc">Saatgutbehandlung mit Fungiziden oder Insektiziden zum Schutz vor Schädlingen im Boden. Gebeiztes Saatgut ist farbig markiert.</div></div>
+    </div>
+    <div class="info-box">💡 <strong>Saisonhinweis:</strong> Saatgut-Hauptsaison ist Herbst (Wintergetreide: Sep–Nov) und Frühjahr (Sommergetreide: Feb–Apr). In dieser Zeit hohe Auslastung im Stückgutlager.</div>
+  </div>
+  </div>
+</div>
+
+<!-- AGRAR: DÜNGER -->
+<div id="page-agrar-duenger" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>Agrar-Fachwissen</span> › Dünger</div>
+  <div class="content-title">Dünger & Pflanzenschutz</div>
+  <div class="content-meta">Agrar-Fachwissen · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Düngemittel und Pflanzenschutzmittel sind wichtige Betriebsmittel im Sortiment. Der Standort Magdeburg verfügt über eine Düngemittelhalle (8.000 t), zwei Flüssigdüngertanks (à 800 t) und ein separates Gefahrstofflager für Pflanzenschutz (800 t).</p>
+    <h3>Wichtige Düngertypen</h3>
+    <div class="term-grid">
+      <div class="term-card"><div class="term-name">Harnstoff (Urea)</div><div class="term-desc">Stickstoffdünger mit 46% N-Gehalt. Schüttgut, wird in der Düngemittelhalle gelagert. Feuchteempfindlich – trockene Lagerung wichtig.</div></div>
+      <div class="term-card"><div class="term-name">KAS (Kalkammonsalpeter)</div><div class="term-desc">27% N-Gehalt. Beliebtester Stickstoffdünger in Deutschland. Lagerstabil, aber nicht mit anderen Stoffen mischen.</div></div>
+      <div class="term-card"><div class="term-name">AHL (Ammoniumnitratlösung)</div><div class="term-desc">Flüssigstickstoff, 28% N. Lagerung in den zwei Tanks à 800 t. Lieferung per Tankwagen direkt auf den Hof.</div></div>
+      <div class="term-card"><div class="term-name">Pflanzenschutz</div><div class="term-desc">Herbizide, Fungizide, Insektizide. Lagerung im separaten Gefahrstofflager. Zulassungspflicht beachten – nur zugelassene Mittel verkaufen.</div></div>
+    </div>
+    <div class="info-box">💡 <strong>Wichtig:</strong> Pflanzenschutzmittel dürfen nur an Personen mit gültigem Sachkundenachweis verkauft werden. Immer vor dem Verkauf prüfen.</div>
+  </div>
+  </div>
+</div>
+
+<!-- SCHIFF: BEGRIFFE -->
+<div id="page-schiff-begriffe" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>Schifffahrt & Logistik</span> › Incoterms</div>
+  <div class="content-title">Handelsbegriffe & Incoterms</div>
+  <div class="content-meta">Schifffahrt & Logistik · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Incoterms (International Commercial Terms) sind international anerkannte Handelsklauseln die regeln, wer die Transportkosten trägt, wer das Risiko übernimmt und ab welchem Punkt der Käufer verantwortlich ist. Sie sind fester Bestandteil jedes Kontrakts.</p>
+    <div class="term-grid">
+      <div class="term-card"><div class="term-name">CIF – Cost, Insurance & Freight</div><div class="term-desc">Verkäufer trägt Kosten, Versicherung und Fracht bis zum Bestimmungshafen. Risiko geht beim Verladen im Abgangshafen auf den Käufer über. Häufig bei Schiffsexporten nach Benelux.</div></div>
+      <div class="term-card"><div class="term-name">FOB – Free on Board</div><div class="term-desc">Verkäufer liefert frei an Bord im Abgangshafen. Ab dem Moment der Übernahme durch das Schiff trägt der Käufer alle Kosten und Risiken.</div></div>
+      <div class="term-card"><div class="term-name">EXW – Ex Works</div><div class="term-desc">Käufer holt die Ware direkt beim Verkäufer ab (z.B. Silo Magdeburg). Alle Transport- und Versicherungskosten beim Käufer. Einfachste Klausel für den Verkäufer.</div></div>
+      <div class="term-card"><div class="term-name">CFR – Cost & Freight</div><div class="term-desc">Wie CIF, aber ohne Versicherungspflicht des Verkäufers. Fracht zahlt der Verkäufer, Versicherung organisiert der Käufer selbst.</div></div>
+      <div class="term-card"><div class="term-name">DAP – Delivered at Place</div><div class="term-desc">Verkäufer liefert bis zum genannten Bestimmungsort. Käufer übernimmt Einfuhrzoll und Entladung. Häufig bei LKW-Lieferungen an Mühlen.</div></div>
+      <div class="term-card"><div class="term-name">FCA – Free Carrier</div><div class="term-desc">Verkäufer übergibt die Ware dem vom Käufer benannten Spediteur an einem vereinbarten Ort. Flexibel einsetzbar für alle Transportarten.</div></div>
+    </div>
+    <div class="info-box">💡 <strong>Merkhilfe:</strong> Bei CIF zahlt und versichert der Verkäufer alles bis zum Zielhafen. Bei FOB endet die Verantwortung des Verkäufers sobald die Ware an Bord ist. Bei EXW macht der Käufer alles selbst.</div>
+  </div>
+  </div>
+</div>
+
+<!-- SCHIFF: ABFERTIGUNG -->
+<div id="page-schiff-abfertigung" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>Schifffahrt & Logistik</span> › Abfertigung</div>
+  <div class="content-title">Schiffsabfertigung – Ablauf am Standort Magdeburg</div>
+  <div class="content-meta">Schifffahrt & Logistik · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Der Standort Magdeburg verfügt über eine leistungsfähige Schiffsverladestelle am Mittellandkanal mit einer Verladeleistung von bis zu 800 t/h. Täglich werden durchschnittlich acht Schiffe abgefertigt. Der Großteil der Ware geht in die Niederlande und nach Belgien.</p>
+    <div class="step"><div class="step-num">1</div><div><div class="step-title">Schiff anmelden</div><div class="step-desc">Der Schiffsführer meldet sich bei der Disposition an. Schiffsname, Kapazität und Ankunftszeit werden erfasst. Die Disposition weist dem Schiff einen Ladeplatz zu.</div></div></div>
+    <div class="step"><div class="step-num">2</div><div><div class="step-title">Kontrakt und Ware prüfen</div><div class="step-desc">Der Händler stellt der Disposition den Kontrakt bereit. Ware, Menge, Qualität und Lieferbedingung (Incoterm) werden geprüft. Die Disposition erstellt die Verladeliste.</div></div></div>
+    <div class="step"><div class="step-num">3</div><div><div class="step-title">Verladung koordinieren</div><div class="step-desc">Das Silo wird angewiesen, die entsprechende Ware aus dem richtigen Lagerbereich auf das Förderband zu geben. Die Verladung erfolgt über Förderbänder direkt in den Schiffsbauch.</div><div class="step-note">⚠️ Qualitätskontrolle während der Verladung: Bei Auffälligkeiten sofort stoppen und die Disposition informieren.</div></div></div>
+    <div class="step"><div class="step-num">4</div><div><div class="step-title">Wiegung und Dokumentation</div><div class="step-desc">Die verladene Menge wird durch Tiefgangsmessung oder Ladegewicht ermittelt. Liefer- und Frachtdokumente werden erstellt: Frachtbrief, Connaissement (bei Seeschiff), Lieferschein.</div></div></div>
+    <div class="step"><div class="step-num">5</div><div><div class="step-title">Abfahrt und Nachbearbeitung</div><div class="step-desc">Schiff verlässt den Standort. Der Lieferschein wird in proALPHA gebucht. Faktura folgt nach Empfangsbestätigung des Kunden.</div></div></div>
+  </div>
+  </div>
+</div>
+
+<!-- SCHIFF: DISPOSITION -->
+<div id="page-schiff-disposition" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>Schifffahrt & Logistik</span> › Disposition</div>
+  <div class="content-title">Disposition Grundlagen</div>
+  <div class="content-meta">Schifffahrt & Logistik · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Die Disposition ist die koordinierende Schnittstelle zwischen Handel, Lager, Schifffahrt und Kunden. Sie steuert alle Warenausgänge und stellt sicher, dass Ware zur richtigen Zeit am richtigen Ort ist.</p>
+    <h3>Aufgaben der Disposition</h3>
+    <div class="term-grid">
+      <div class="term-card"><div class="term-name">Schiffsplanung</div><div class="term-desc">Zuweisung von Schiffen zu Ladeplätzen, Koordination der Verladung, Abstimmung mit Schiffsführern und Reedereien.</div></div>
+      <div class="term-card"><div class="term-name">LKW-Koordination</div><div class="term-desc">Planung von LKW-Abholungen, Vergabe von Ladefenstern, Abstimmung mit Speditionen und Fahrern.</div></div>
+      <div class="term-card"><div class="term-name">Lagerkoordination</div><div class="term-desc">Abstimmung mit dem Silo welche Ware aus welchem Lagerbereich entnommen wird. Sicherstellung der Sortenreinheit.</div></div>
+      <div class="term-card"><div class="term-name">Dokumentation</div><div class="term-desc">Erstellung von Verladelisten, Lieferscheinen, Frachtbriefen. Buchung aller Ausgänge im ERP-System proALPHA.</div></div>
+    </div>
+    <div class="info-box">💡 <strong>Wichtig:</strong> Die Disposition ist der erste Ansprechpartner bei Fragen zu laufenden Transporten, Schiffsterminen und Lieferstatus. In der Erntesaison besonders hohe Auslastung – Anfragen bündeln.</div>
+  </div>
+  </div>
+</div>
+
+<!-- SCHIFF: DOKUMENTE -->
+<div id="page-schiff-dokumente" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>Schifffahrt & Logistik</span> › Dokumente</div>
+  <div class="content-title">Dokumente & Nachweise im Schiffshandel</div>
+  <div class="content-meta">Schifffahrt & Logistik · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Im Schiffshandel begleiten verschiedene Dokumente jede Lieferung. Sie dienen der rechtlichen Absicherung, der Rückverfolgbarkeit und als Grundlage für die Abrechnung.</p>
+    <div class="term-grid">
+      <div class="term-card"><div class="term-name">Lieferschein</div><div class="term-desc">Internes Dokument aus proALPHA. Dokumentiert die gelieferte Menge und Qualität. Grundlage für die Rechnung.</div></div>
+      <div class="term-card"><div class="term-name">Frachtbrief (CMR)</div><div class="term-desc">Begleitdokument für LKW-Transporte. Enthält Absender, Empfänger, Ware und Transportbedingungen.</div></div>
+      <div class="term-card"><div class="term-name">Connaissement (B/L)</div><div class="term-desc">Bill of Lading – Seefrachtbrief für Seeschifftransporte. Eigentumsnachweis über die Ware.</div></div>
+      <div class="term-card"><div class="term-name">Wiegeprotokoll</div><div class="term-desc">Nachweis über das Ladegewicht. Grundlage für die mengenmäßige Abrechnung.</div></div>
+      <div class="term-card"><div class="term-name">Qualitätszertifikat</div><div class="term-desc">Laborprotokoll mit den gemessenen Qualitätsparametern. Wird dem Kunden mit der Lieferung übergeben.</div></div>
+      <div class="term-card"><div class="term-name">Phytosanitäres Zertifikat</div><div class="term-desc">Pflanzenschutzzeugnis für Exporte in Nicht-EU-Länder. Bescheinigt Schädlingsfreiheit der Ware.</div></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- IT: TEAMS -->
+<div id="page-it-teams" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>IT & Microsoft</span> › Teams</div>
+  <div class="content-title">Microsoft Teams – häufige Probleme & Lösungen</div>
+  <div class="content-meta">IT & Microsoft · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Microsoft Teams ist das zentrale Kommunikationswerkzeug bei BAT Agrar. Hier sind die häufigsten Probleme und ihre schnellen Lösungen.</p>
+    <div class="step"><div class="step-num">🔇</div><div><div class="step-title">Kein Ton / Mikrofon funktioniert nicht</div><div class="step-desc">Lautstärke prüfen → in Teams oben rechts auf das Profil klicken → Einstellungen → Geräte → richtiges Mikrofon und Lautsprecher auswählen. Windows-Soundeinstellungen prüfen.</div></div></div>
+    <div class="step"><div class="step-num">📵</div><div><div class="step-title">Teams startet nicht oder hängt</div><div class="step-desc">Teams komplett schließen (auch im Systray rechts unten). Dann neu starten. Falls weiterhin Problem: Cache leeren unter %AppData%\Microsoft\Teams → Ordner leeren → Teams neu starten.</div></div></div>
+    <div class="step"><div class="step-num">🔑</div><div><div class="step-title">Anmeldefehler / falsches Konto</div><div class="step-desc">In Teams oben rechts auf Profilbild klicken → Abmelden → dann mit der korrekten BAT-Agrar E-Mail-Adresse erneut anmelden.</div></div></div>
+    <div class="step"><div class="step-num">📹</div><div><div class="step-title">Kamera wird nicht erkannt</div><div class="step-desc">Kameraabdeckung prüfen. In Einstellungen → Geräte → Kamera auswählen. Windows-Datenschutzeinstellungen: Kamerazugriff für Teams erlauben.</div></div></div>
+    <div class="info-box">💡 Bei anhaltenden Problemen: IT-Support anrufen – Thomas Müller 0391 7823-141 oder Sandra Krause 0391 7823-142.</div>
+  </div>
+  </div>
+</div>
+
+<!-- IT: OUTLOOK -->
+<div id="page-it-outlook" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>IT & Microsoft</span> › Outlook</div>
+  <div class="content-title">Outlook – Einrichtung & häufige Probleme</div>
+  <div class="content-meta">IT & Microsoft · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Outlook ist das E-Mail- und Kalenderprogramm bei BAT Agrar. Bei der Ersteinrichtung wird das Konto automatisch konfiguriert. Bei Problemen helfen diese Schritte.</p>
+    <div class="step"><div class="step-num">1</div><div><div class="step-title">Ersteinrichtung</div><div class="step-desc">Outlook öffnen → E-Mail-Adresse eingeben → Passwort eingeben → Verbindung wird automatisch hergestellt. Kein manuelles Einrichten von Serveradressen nötig.</div></div></div>
+    <div class="step"><div class="step-num">2</div><div><div class="step-title">E-Mails kommen nicht an</div><div class="step-desc">Internetverbindung prüfen. Outlook neu starten. Junk-E-Mail-Ordner prüfen. IT-Support kontaktieren wenn das Problem anhält.</div></div></div>
+    <div class="step"><div class="step-num">3</div><div><div class="step-title">Signatur einrichten</div><div class="step-desc">Datei → Optionen → E-Mail → Signaturen. Neue Signatur erstellen mit Name, Position, Telefon und E-Mail-Adresse. Corporate Design beachten.</div></div></div>
+    <div class="step"><div class="step-num">4</div><div><div class="step-title">Kalender freigeben</div><div class="step-desc">Im Kalender: Rechtsklick auf Kalender → Freigabe und Berechtigungen → Kollegen hinzufügen und Berechtigungsstufe festlegen.</div></div></div>
+  </div>
+  </div>
+</div>
+
+<!-- IT: SHAREPOINT -->
+<div id="page-it-sharepoint" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>IT & Microsoft</span> › SharePoint</div>
+  <div class="content-title">SharePoint & Intranet</div>
+  <div class="content-meta">IT & Microsoft · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>SharePoint ist das digitale Intranet von BAT Agrar. Dort werden Unternehmensnachrichten, Formulare, Vorlagen und abteilungsübergreifende Dokumente abgelegt.</p>
+    <div class="step"><div class="step-num">1</div><div><div class="step-title">Zugriff über Browser oder Teams</div><div class="step-desc">SharePoint ist erreichbar über den Browser (Adresse vom IT-Support erfragen) oder direkt in Microsoft Teams unter dem Tab „SharePoint".</div></div></div>
+    <div class="step"><div class="step-num">2</div><div><div class="step-title">Dokumente hochladen</div><div class="step-desc">In den gewünschten Ordner navigieren → „Hochladen" → Datei auswählen. Alternativ per Drag & Drop direkt in den Browser ziehen.</div></div></div>
+    <div class="step"><div class="step-num">3</div><div><div class="step-title">Dokumente gemeinsam bearbeiten</div><div class="step-desc">Auf die Datei klicken → „Im Browser öffnen" oder „In App öffnen". Mehrere Personen können gleichzeitig an Office-Dokumenten arbeiten.</div></div></div>
+    <div class="info-box">💡 Wichtige Formulare wie Urlaubsanträge und Reisekostenabrechnungen sind im SharePoint unter „Formulare & Vorlagen" zu finden.</div>
+  </div>
+  </div>
+</div>
+
+<!-- IT: EXCEL -->
+<div id="page-it-excel" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>IT & Microsoft</span> › Excel</div>
+  <div class="content-title">Excel für den Agrarhandel</div>
+  <div class="content-meta">IT & Microsoft · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Excel wird im Handel täglich für Auswertungen, Preiskalkulationen und Kontraktübersichten genutzt. Hier sind die wichtigsten Anwendungsfälle.</p>
+    <div class="term-grid">
+      <div class="term-card"><div class="term-name">Preiskalkulation</div><div class="term-desc">Berechnung von Einkaufs- und Verkaufspreisen unter Berücksichtigung von Qualitätsabzügen, Frachten und Margen.</div></div>
+      <div class="term-card"><div class="term-name">Kontraktübersicht</div><div class="term-desc">Tabellarische Übersicht aller offenen Kontrakte mit Menge, Preis, Lieferzeitraum und Restmengen.</div></div>
+      <div class="term-card"><div class="term-name">Lagerauswertung</div><div class="term-desc">Auswertung der aktuellen Lagerbestände nach Kultur, Qualität und Lagerort. Export aus proALPHA möglich.</div></div>
+      <div class="term-card"><div class="term-name">SVERWEIS / XVERWEIS</div><div class="term-desc">Häufig genutzt um Preise oder Kundeninfos aus einer Referenztabelle automatisch zuzuordnen. Bei Bedarf IT-Support fragen.</div></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ONBOARDING: ERSTER TAG -->
+<div id="page-onboarding-erster-tag" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>Onboarding</span> › Erster Arbeitstag</div>
+  <div class="content-title">Erster Arbeitstag bei BAT Agrar Magdeburg</div>
+  <div class="content-meta">Onboarding · Herzlich willkommen!</div>
+  <div class="article">
+    <p>Herzlich willkommen am Standort Magdeburg. Diese Checkliste hilft dir, den ersten Tag strukturiert anzugehen und nichts Wichtiges zu vergessen.</p>
+    <div class="step"><div class="step-num">1</div><div><div class="step-title">Anmeldung am Empfang</div><div class="step-desc">Beim Empfang melden und nach deiner Ansprechperson fragen. Du erhältst einen Besucher- oder Mitarbeiterausweis und eine erste Einführung ins Gebäude.</div></div></div>
+    <div class="step"><div class="step-num">2</div><div><div class="step-title">IT-Zugang einrichten</div><div class="step-desc">Zugangsdaten für Windows, proALPHA, Microsoft Teams und Outlook werden ausgegeben. Sofort beim ersten Login das Passwort ändern.</div><div class="step-note">⚠️ Passwort muss mindestens 8 Zeichen haben, Groß- und Kleinbuchstaben sowie eine Zahl enthalten.</div></div></div>
+    <div class="step"><div class="step-num">3</div><div><div class="step-title">Einführung proALPHA</div><div class="step-desc">Eine Grundschulung findet in der ersten Woche statt. Den BAT Knowledge Hub parallel als Nachschlagewerk nutzen – besonders die proALPHA-Anleitungen.</div></div></div>
+    <div class="step"><div class="step-num">4</div><div><div class="step-title">Abteilung und Team kennenlernen</div><div class="step-desc">Direkte Kollegen, Vorgesetzte und Ansprechpartner kennenlernen. Fragen stellen ist ausdrücklich erwünscht – niemand erwartet dass du am ersten Tag alles weißt.</div></div></div>
+    <div class="step"><div class="step-num">5</div><div><div class="step-title">Sicherheitsunterweisung</div><div class="step-desc">Pflichtunterweisung für Silo, Lager und Verladebereiche. Termine werden durch den Vorgesetzten koordiniert. Ohne Unterweisung kein Zutritt zu Lagerbereichen.</div></div></div>
+    <div class="info-box">💡 <strong>Gut zu wissen:</strong> Die Kantine befindet sich im Erdgeschoss. Mittagessen ist täglich von 11:30 bis 13:30 Uhr möglich. Parkplätze stehen auf dem Betriebsgelände zur Verfügung.</div>
+  </div>
+  </div>
+</div>
+
+<!-- ONBOARDING: STANDORT -->
+<div id="page-onboarding-standort" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>Onboarding</span> › Standort</div>
+  <div class="content-title">Standort Magdeburg – Überblick</div>
+  <div class="content-meta">Onboarding · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Der Standort Magdeburg ist einer der bedeutendsten Agrarhandelsstandorte von BAT Agrar und fungiert als logistischer Knotenpunkt für die gesamte Handelsregion OST.</p>
+    <h3>Infrastruktur</h3>
+    <div class="term-grid">
+      <div class="term-card"><div class="term-name">Lagerkapazität</div><div class="term-desc">Ca. 180.000 Tonnen Gesamtkapazität: Silo Alt (~100.000 t) und Silo Neu (~80.000 t).</div></div>
+      <div class="term-card"><div class="term-name">Annahmeleistung</div><div class="term-desc">1.300 t/h gesamt (Silo Alt: 2×200 t/h, Silo Neu: 3×300 t/h).</div></div>
+      <div class="term-card"><div class="term-name">Verladeleistung</div><div class="term-desc">800 t/h gesamt – ca. 8 Schiffe täglich können abgefertigt werden.</div></div>
+      <div class="term-card"><div class="term-name">Trimodale Anbindung</div><div class="term-desc">Mittellandkanal (Schiff), Gleisanlage (Bahn), A2/A14 (Straße).</div></div>
+    </div>
+    <h3>Jahreszyklus</h3>
+    <p>Die Erntesaison (Juli–September) ist die arbeitsreichste Zeit am Standort. Weizen und Gerste kommen zuerst, Mais im Spätherbst. In dieser Zeit sind alle Bereiche hochausgelastet – Überstunden sind üblich und werden erwartet.</p>
+  </div>
+  </div>
+</div>
+
+<!-- ONBOARDING: SYSTEME -->
+<div id="page-onboarding-systeme" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>Onboarding</span> › Systemzugänge</div>
+  <div class="content-title">Systemzugänge einrichten</div>
+  <div class="content-meta">Onboarding · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Am ersten Tag erhältst du Zugänge zu allen relevanten Systemen. Hier ein Überblick welches System wofür genutzt wird.</p>
+    <div class="term-grid">
+      <div class="term-card"><div class="term-name">Windows / Active Directory</div><div class="term-desc">Basis-Login für den PC. Benutzername und Passwort werden vom IT-Support ausgegeben. Gilt für alle Microsoft-Anwendungen.</div></div>
+      <div class="term-card"><div class="term-name">proALPHA</div><div class="term-desc">ERP-System für alle kaufmännischen Prozesse. Separater Login. Berechtigungen je nach Abteilung unterschiedlich.</div></div>
+      <div class="term-card"><div class="term-name">Microsoft 365</div><div class="term-desc">Teams, Outlook, Excel, SharePoint. Login mit der BAT-Agrar-E-Mail-Adresse und Windows-Passwort.</div></div>
+      <div class="term-card"><div class="term-name">Hofportal</div><div class="term-desc">Kundenportal für Landwirte. Interner Zugang für Mitarbeitende über den Browser. Login-Daten beim Vorgesetzten erfragen.</div></div>
+    </div>
+    <div class="step"><div class="step-num">!</div><div><div class="step-title">Passwort sofort ändern</div><div class="step-desc">Beim ersten Login das vergebene Passwort sofort ändern. Neues Passwort: mindestens 8 Zeichen, Groß- und Kleinbuchstaben, mindestens eine Zahl. Passwort nicht aufschreiben oder weitergeben.</div></div></div>
+  </div>
+  </div>
+</div>
+
+<!-- ONBOARDING: ANSPRECHPARTNER -->
+<div id="page-onboarding-ansprechpartner" class="content-page">
+  <div style="padding:40px;max-width:860px;">
+  <div class="breadcrumb"><span onclick="showHome()">Startseite</span> › <span>Onboarding</span> › Ansprechpartner</div>
+  <div class="content-title">Ansprechpartner am Standort Magdeburg</div>
+  <div class="content-meta">Onboarding · Zuletzt aktualisiert: Mai 2026</div>
+  <div class="article">
+    <p>Bei Fragen und Problemen gibt es immer eine Ansprechperson. Hier sind die wichtigsten Kontakte am Standort.</p>
+    <div class="term-grid">
+      <div class="term-card"><div class="term-name">IT-Support</div><div class="term-desc">Thomas Müller: 0391 7823-141<br>Sandra Krause: 0391 7823-142<br>Notfall: 0391 7823-199 (24/7)</div></div>
+      <div class="term-card"><div class="term-name">Lagerleitung</div><div class="term-desc">Zuständig für alle Fragen rund um Silo, Lager, Einlagerung und Verladung. Kontakt über den Vorgesetzten erfragen.</div></div>
+      <div class="term-card"><div class="term-name">Disposition</div><div class="term-desc">Zuständig für Schiffs- und LKW-Koordination, Lieferscheine und laufende Transporte. Intern erreichbar.</div></div>
+      <div class="term-card"><div class="term-name">Personalwesen (HR)</div><div class="term-desc">Für alle Fragen zu Urlaub, Arbeitszeiten, Vergütung und Ausbildungsvertrag. Kontakt über den Vorgesetzten.</div></div>
+    </div>
+    <div class="info-box">💡 <strong>Tipp für Azubis und duale Studierende:</strong> Euer direkter Ausbilder ist eure erste Anlaufstelle für alle Fragen. Traut euch nachzufragen – das ist ausdrücklich erwünscht.</div>
+  </div>
+  </div>
+</div>
+
+</div><!-- END CONTENT PAGES -->
+
+<!-- CHAT -->
+<button class="chat-fab" id="chatFab" onclick="toggleChat()">
+  <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+  <span class="chat-badge" id="chatBadge">1</span>
+</button>
+
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header">
+    <div class="chat-avatar">🤖</div>
+    <div><div class="chat-header-name">BAT Wissensassistent</div><div class="chat-header-status">Regelbasiert · Offline verfügbar</div></div>
+    <button class="chat-close" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="chat-suggestions">
+    <div class="chat-suggestions-label">Häufige Fragen</div>
+    <span class="chat-chip" onclick="handleChip('Wie erstelle ich einen Lieferschein?')">📄 Lieferschein erstellen</span>
+    <span class="chat-chip" onclick="handleChip('Was bedeutet CIF?')">⚓ Was bedeutet CIF?</span>
+    <span class="chat-chip" onclick="handleChip('Was ist die Fallzahl?')">🌾 Was ist die Fallzahl?</span>
+    <span class="chat-chip" onclick="handleChip('Erster Arbeitstag Checkliste')">🎯 Erster Arbeitstag</span>
+    <span class="chat-chip" onclick="handleChip('Teams funktioniert nicht')">💻 Teams Problem</span>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="msg msg-bot">Hallo! Ich bin dein Wissensassistent für BAT Agrar Magdeburg. Stell mir eine Frage oder wähle ein Thema oben – ich helfe dir weiter.</div>
+  </div>
+  <div class="msg msg-typing" id="typingIndicator"><div class="typing-dots"><span></span><span></span><span></span></div></div>
+  <div class="chat-input-area">
+    <input class="chat-input" id="chatInput" placeholder="Frage stellen..." onkeydown="if(event.key==='Enter')sendMessage()">
+    <button class="chat-send" onclick="sendMessage()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+  </div>
+</div>
+
+<script>
+// NAV DROPDOWNS
+function openDropdown(id, btn) {
+  document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+  document.querySelectorAll('.nav-top-btn').forEach(b => b.classList.remove('open'));
+  document.getElementById(id).classList.add('open');
+  btn.classList.add('open');
+}
+function closeDropdown(id) {
+  document.getElementById(id).classList.remove('open');
+  document.querySelectorAll('.nav-top-btn').forEach(b => {
+    if (b.getAttribute('onmouseenter') && b.getAttribute('onmouseenter').includes(id)) b.classList.remove('open');
+  });
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-item-wrap')) {
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+    document.querySelectorAll('.nav-top-btn').forEach(b => b.classList.remove('open'));
+  }
+});
+
+// PAGE NAVIGATION
+function showHome() {
+  document.getElementById('home').style.display = 'block';
+  document.getElementById('content-pages').style.display = 'none';
+  document.querySelectorAll('.content-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-top-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-home').classList.add('active');
+  window.scrollTo(0,0);
+}
+function showContent(id) {
+  document.getElementById('home').style.display = 'none';
+  document.getElementById('content-pages').style.display = 'block';
+  document.querySelectorAll('.content-page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  if (page) { page.classList.add('active'); window.scrollTo(0,0); }
+  document.querySelectorAll('.nav-top-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+}
+
+// SEARCH
+const searchIndex = [
+  {page:'erp-lieferschein',titel:'Lieferschein erstellen',bereich:'ERP – proALPHA',tags:['lieferschein','lieferung','liefern','versand']},
+  {page:'erp-faktura',titel:'Faktura & Abrechnung',bereich:'ERP – proALPHA',tags:['faktura','rechnung','abrechnung','fakturieren']},
+  {page:'erp-rahmenbestellung',titel:'Rahmenbestellung anlegen',bereich:'ERP – proALPHA',tags:['rahmenbestellung','bestellung','rahmenauftrag']},
+  {page:'erp-wareneingang',titel:'Wareneingang buchen',bereich:'ERP – proALPHA',tags:['wareneingang','eingang','einbuchen','warenannahme']},
+  {page:'erp-kontrakt',titel:'Kontrakt anlegen',bereich:'ERP – proALPHA',tags:['kontrakt','vertrag','kontrakte','proalpha']},
+  {page:'agrar-qualitaet',titel:'Qualitätsparameter Getreide',bereich:'Agrar-Fachwissen',tags:['qualität','fallzahl','protein','feuchte','hektoliter','besatz','don','getreide','weizen','labor']},
+  {page:'agrar-kulturen',titel:'Kulturen & Besonderheiten',bereich:'Agrar-Fachwissen',tags:['kulturen','weizen','gerste','mais','raps','ernte']},
+  {page:'agrar-zertifizierung',titel:'QS & GMP+ Zertifizierung',bereich:'Agrar-Fachwissen',tags:['qs','gmp','zertifizierung','futtermittel']},
+  {page:'agrar-saatgut',titel:'Saatgut Grundlagen',bereich:'Agrar-Fachwissen',tags:['saatgut','saat','sorte']},
+  {page:'agrar-duenger',titel:'Dünger & Pflanzenschutz',bereich:'Agrar-Fachwissen',tags:['dünger','düngung','pflanzenschutz','herbizid']},
+  {page:'schiff-begriffe',titel:'Handelsbegriffe & Incoterms',bereich:'Schifffahrt & Logistik',tags:['cif','fob','exw','cfr','dap','incoterm','handelsbegriff']},
+  {page:'schiff-abfertigung',titel:'Schiffsabfertigung Ablauf',bereich:'Schifffahrt & Logistik',tags:['schiff','abfertigung','verladen','kanal','mittellandkanal']},
+  {page:'schiff-disposition',titel:'Disposition Grundlagen',bereich:'Schifffahrt & Logistik',tags:['disposition','disponent','transport','logistik']},
+  {page:'schiff-dokumente',titel:'Dokumente & Nachweise',bereich:'Schifffahrt & Logistik',tags:['dokument','nachweis','frachtbrief','zoll']},
+  {page:'it-teams',titel:'Microsoft Teams Probleme',bereich:'IT & Microsoft',tags:['teams','microsoft teams','meeting','teams fehler']},
+  {page:'it-outlook',titel:'Outlook Einrichtung',bereich:'IT & Microsoft',tags:['outlook','email','mail','postfach','kalender']},
+  {page:'it-sharepoint',titel:'SharePoint / Intranet',bereich:'IT & Microsoft',tags:['sharepoint','intranet','dokument','cloud']},
+  {page:'it-excel',titel:'Excel für den Handel',bereich:'IT & Microsoft',tags:['excel','tabelle','kalkulation','pivot']},
+  {page:'onboarding-erster-tag',titel:'Erster Arbeitstag',bereich:'Onboarding',tags:['erster tag','onboarding','einarbeitung','start','neu','anfang']},
+  {page:'onboarding-standort',titel:'Standort Magdeburg',bereich:'Onboarding',tags:['standort','magdeburg','silo','lager','kapazität']},
+  {page:'onboarding-systeme',titel:'Systemzugänge einrichten',bereich:'Onboarding',tags:['passwort','login','zugang','zugangsdaten','windows']},
+  {page:'onboarding-ansprechpartner',titel:'Ansprechpartner',bereich:'Onboarding',tags:['ansprechpartner','kontakt','support']},
+];
+
+function handleSearch(e) {
+  const inp = document.getElementById('searchInput');
+  const q = inp.value.toLowerCase().trim();
+  let dd = document.getElementById('searchDropdown');
+  if (!dd) {
+    dd = document.createElement('div');
+    dd.id = 'searchDropdown';
+    dd.style.cssText = 'display:none;position:fixed;top:48px;right:0;width:300px;background:white;border:1px solid #E0E0E0;border-radius:0 0 8px 8px;box-shadow:0 8px 24px rgba(0,0,0,0.15);z-index:500;max-height:360px;overflow-y:auto;';
+    document.body.appendChild(dd);
+  }
+  if (!q) { dd.style.display = 'none'; return; }
+  const treffer = searchIndex.filter(item =>
+    item.titel.toLowerCase().includes(q) || item.bereich.toLowerCase().includes(q) ||
+    item.tags.some(t => t.includes(q) || q.includes(t))
+  ).slice(0,8);
+  if (e.key === 'Enter' && treffer.length > 0) { showContent(treffer[0].page); dd.style.display='none'; inp.value=''; return; }
+  dd.innerHTML = treffer.length === 0
+    ? '<div style="padding:14px 16px;font-size:13px;color:#999">Keine Ergebnisse gefunden.</div>'
+    : treffer.map(t => '<div onclick="showContent(\''+t.page+'\');document.getElementById(\'searchDropdown\').style.display=\'none\';document.getElementById(\'searchInput\').value=\'\'" style="padding:11px 16px;cursor:pointer;border-bottom:1px solid #F5F5F5;" onmouseover="this.style.background=\'#F5F5F5\'" onmouseout="this.style.background=\'white\'"><div style="font-size:13px;font-weight:600;color:#1C1C1C">'+t.titel+'</div><div style="font-size:11px;color:#E3000F;margin-top:2px">'+t.bereich+'</div></div>').join('');
+  dd.style.display = 'block';
+}
+document.addEventListener('click', function(e) {
+  const dd = document.getElementById('searchDropdown');
+  if (dd && !e.target.closest('.topbar-search') && !e.target.closest('#searchDropdown')) dd.style.display = 'none';
+});
+
+// CHAT
+function toggleChat() {
+  const win = document.getElementById('chatWindow');
+  win.classList.toggle('open');
+  if (win.classList.contains('open')) document.getElementById('chatBadge').style.display = 'none';
+}
+
+function handleChip(text) {
+  document.getElementById('chatInput').value = text;
+  sendMessage();
+}
+
+const wissensDB = [
+  {keywords:['lieferschein','lieferung','liefern'],page:'erp-lieferschein',titel:'Lieferschein erstellen',bereich:'ERP – proALPHA',antwort:'Einen Lieferschein erstellst du in proALPHA unter Vertrieb → Auftragsbearbeitung → Verkaufsaufträge. Auftrag öffnen → „Lieferschein erzeugen" → Menge prüfen → Buchen.'},
+  {keywords:['faktura','rechnung','abrechnung'],page:'erp-faktura',titel:'Faktura & Abrechnung',bereich:'ERP – proALPHA',antwort:'Faktura unter Vertrieb → Faktura → offene Lieferscheine. Lieferschein auswählen → „Rechnung erzeugen" → Preise prüfen → Buchen.'},
+  {keywords:['kontrakt','vertrag'],page:'erp-kontrakt',titel:'Kontrakt anlegen',bereich:'ERP – proALPHA',antwort:'Kontrakte werden unter Vertrieb (Verkauf) oder Einkauf (Kauf) → Kontrakte angelegt. Geschäftspartner, Menge, Preis und Lieferbedingungen eintragen.'},
+  {keywords:['wareneingang','eingang','einbuchen'],page:'erp-wareneingang',titel:'Wareneingang buchen',bereich:'ERP – proALPHA',antwort:'Wareneingang unter Logistik → Wareneingang → Neuer Wareneingang. Kontraktnummer, Nettomenge aus Wiegebeleg und Lagerort eingeben, dann buchen.'},
+  {keywords:['cif','fob','exw','incoterm','cfr','dap'],page:'schiff-begriffe',titel:'Handelsbegriffe & Incoterms',bereich:'Schifffahrt & Logistik',antwort:'CIF = Verkäufer zahlt Kosten, Versicherung und Fracht bis Zielhafen. FOB = Risiko geht beim Verladen auf Käufer über. EXW = Käufer holt ab und trägt alle Kosten.'},
+  {keywords:['schiff','abfertigung','verladen','verladung'],page:'schiff-abfertigung',titel:'Schiffsabfertigung',bereich:'Schifffahrt & Logistik',antwort:'Schiff meldet sich bei Disposition an → Kontrakt prüfen → Verladeliste erstellen → Silo anweisen → Verladung → Wiegung → Dokumente erstellen → in proALPHA buchen.'},
+  {keywords:['disposition','disponent'],page:'schiff-disposition',titel:'Disposition Grundlagen',bereich:'Schifffahrt & Logistik',antwort:'Die Disposition koordiniert alle Transporte – Schiffe, LKW und Bahntransporte. Erster Ansprechpartner bei Fragen zu laufenden Lieferungen und Terminen.'},
+  {keywords:['fallzahl','protein','feuchte','qualität','getreide','hektoliter','besatz','don'],page:'agrar-qualitaet',titel:'Qualitätsparameter Getreide',bereich:'Agrar-Fachwissen',antwort:'Weizen-Richtwerte: Feuchte max. 14,5%, Protein min. 12%, Fallzahl min. 220 Sek., Hektolitergewicht min. 76 kg/hl, Besatz max. 2%, DON max. 1.250 µg/kg.'},
+  {keywords:['qs','gmp','zertifizierung'],page:'agrar-zertifizierung',titel:'QS & GMP+ Zertifizierung',bereich:'Agrar-Fachwissen',antwort:'QS = Lebensmittelsicherheit, Pflicht für Mühlenlieferungen. GMP+ = Futtermittelsicherheit, Pflicht für Mischfutterwerke. Beide erfordern lückenlose Dokumentation.'},
+  {keywords:['saatgut','saat','sorte'],page:'agrar-saatgut',titel:'Saatgut Grundlagen',bereich:'Agrar-Fachwissen',antwort:'Nur Z-Saatgut (zertifiziert, blaue Etikette) darf als Saatgut verkauft werden. Keimfähigkeit min. 85%. Hauptsaison: Herbst für Winter-, Frühjahr für Sommergetreide.'},
+  {keywords:['dünger','pflanzenschutz','herbizid'],page:'agrar-duenger',titel:'Dünger & Pflanzenschutz',bereich:'Agrar-Fachwissen',antwort:'Hauptdünger: Harnstoff (46% N), KAS (27% N), AHL (Flüssig, 28% N). Pflanzenschutz nur an Personen mit gültigem Sachkundenachweis verkaufen.'},
+  {keywords:['teams','microsoft teams'],page:'it-teams',titel:'Microsoft Teams Probleme',bereich:'IT & Microsoft',antwort:'Kein Ton: Einstellungen → Geräte → richtiges Mikrofon wählen. Teams hängt: komplett schließen und neu starten. Bei anhaltenden Problemen: IT-Support 0391 7823-141.'},
+  {keywords:['outlook','email','mail'],page:'it-outlook',titel:'Outlook Einrichtung',bereich:'IT & Microsoft',antwort:'Outlook-Konto wird automatisch eingerichtet beim ersten Start. E-Mail-Adresse eingeben → Passwort → fertig. Signatur unter Datei → Optionen → E-Mail → Signaturen einrichten.'},
+  {keywords:['sharepoint','intranet'],page:'it-sharepoint',titel:'SharePoint / Intranet',bereich:'IT & Microsoft',antwort:'SharePoint erreichbar über Browser oder in Teams unter SharePoint-Tab. Formulare wie Urlaubsanträge unter „Formulare & Vorlagen" zu finden.'},
+  {keywords:['erster tag','onboarding','einarbeitung','neu'],page:'onboarding-erster-tag',titel:'Erster Arbeitstag',bereich:'Onboarding',antwort:'Empfang melden → IT-Zugang einrichten → Passwort ändern → Kollegen kennenlernen → Sicherheitsunterweisung absolvieren. Fragen stellen ist ausdrücklich erwünscht!'},
+  {keywords:['passwort','login','zugang'],page:'onboarding-systeme',titel:'Systemzugänge',bereich:'Onboarding',antwort:'Zugänge für Windows, proALPHA, Teams und Outlook werden am ersten Tag ausgegeben. Passwort sofort ändern: mind. 8 Zeichen, Groß-/Kleinbuchstaben, eine Zahl.'},
+  {keywords:['ansprechpartner','kontakt','support','it-support'],page:'onboarding-ansprechpartner',titel:'Ansprechpartner',bereich:'Onboarding',antwort:'IT: Thomas Müller (0391 7823-141), Sandra Krause (0391 7823-142), Notfall 24/7: 0391 7823-199. Für alle anderen Fragen: direkt den Vorgesetzten oder Ausbilder ansprechen.'},
+];
+
+function findAntwort(frage) {
+  const q = frage.toLowerCase();
+  let best = null; let max = 0;
+  for (const e of wissensDB) {
+    let score = 0;
+    for (const kw of e.keywords) { if (q.includes(kw)) score += kw.length; }
+    if (score > max) { max = score; best = e; }
+  }
+  return best;
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  const msgs = document.getElementById('chatMessages');
+  const u = document.createElement('div');
+  u.className = 'msg msg-user'; u.textContent = msg; msgs.appendChild(u);
+  const typing = document.getElementById('typingIndicator');
+  typing.style.display = 'block'; msgs.scrollTop = msgs.scrollHeight;
+  setTimeout(() => {
+    typing.style.display = 'none';
+    const treffer = findAntwort(msg);
+    const b = document.createElement('div');
+    b.className = 'msg msg-bot';
+    if (treffer) {
+      b.innerHTML = treffer.antwort + '<br><br><span style="font-size:12px;color:#999">→ Mehr dazu: <strong style="color:#E3000F;cursor:pointer" onclick="showContent(\''+treffer.page+'\');toggleChat()">'+treffer.titel+' ('+treffer.bereich+')</strong></span>';
+    } else {
+      b.textContent = 'Dazu habe ich keinen passenden Eintrag gefunden. Nutze die Suche oben oder navigiere über das Menü.';
+    }
+    msgs.appendChild(b);
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 700);
+}
+</script>
+</body>
+</html>
